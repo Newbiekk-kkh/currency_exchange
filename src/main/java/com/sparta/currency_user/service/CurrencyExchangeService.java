@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,13 @@ public class CurrencyExchangeService {
 
         currencyExchangeRepository.save(currencyExchange);
 
-        return new CurrencyExchangeResponseDto(currencyExchange.getId(), currencyExchange.getAmountInKrw(), currencyExchange.getStatus());
+        return new CurrencyExchangeResponseDto(currencyExchange.getId(), currencyExchange.getAmountAfterExchange(), currencyExchange.getStatus());
+    }
+
+    public List<CurrencyExchangeResponseDto> findAllCurrencyExchangeByUser(Long userId) {
+        User findUser = userRepository.findByIdOrElseThrow(userId);
+        List<CurrencyExchange> allCurrencyExchangeListByUser = currencyExchangeRepository.findAllByUser(findUser);
+
+        return allCurrencyExchangeListByUser.stream().map(CurrencyExchangeResponseDto::toDto).toList();
     }
 }
