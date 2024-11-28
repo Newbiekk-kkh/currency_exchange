@@ -1,9 +1,9 @@
 package com.sparta.currency_user.controller;
 
-import com.sparta.currency_user.dto.CurrencyExchangeRequestDto;
-import com.sparta.currency_user.dto.CurrencyExchangeResponseDto;
-import com.sparta.currency_user.dto.CurrencyResponseDto;
-import com.sparta.currency_user.dto.UpdateCurrencyExchangeRequestDto;
+import com.sparta.currency_user.dto.currencyExchange.TotalCurrencyExchangeByUserResponseDto;
+import com.sparta.currency_user.dto.currencyExchange.CurrencyExchangeRequestDto;
+import com.sparta.currency_user.dto.currencyExchange.CurrencyExchangeResponseDto;
+import com.sparta.currency_user.dto.currencyExchange.UpdateCurrencyExchangeRequestDto;
 import com.sparta.currency_user.exception.CurrencyExchangeException;
 import com.sparta.currency_user.service.CurrencyExchangeService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +37,13 @@ public class CurrencyExchangeController {
         List<CurrencyExchangeResponseDto> allCurrencyExchangeListByUser = currencyExchangeService.findAllCurrencyExchangeByUser(userId);
 
         return new ResponseEntity<>(allCurrencyExchangeListByUser, HttpStatus.OK);
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<List<TotalCurrencyExchangeByUserResponseDto>> findTotalCurrencyExchangeByUser(@PathVariable Long userId) {
+        List<TotalCurrencyExchangeByUserResponseDto> totalCurrencyExchangeByUser = currencyExchangeService.findTotalCurrencyExchangeByUser(userId);
+
+        return new ResponseEntity<>(totalCurrencyExchangeByUser, HttpStatus.OK);
     }
 
     @PatchMapping("/{currencyExchangesId}")

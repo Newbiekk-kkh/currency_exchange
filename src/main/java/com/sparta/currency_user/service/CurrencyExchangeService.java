@@ -1,6 +1,7 @@
 package com.sparta.currency_user.service;
 
-import com.sparta.currency_user.dto.CurrencyExchangeResponseDto;
+import com.sparta.currency_user.dto.currencyExchange.CurrencyExchangeResponseDto;
+import com.sparta.currency_user.dto.currencyExchange.TotalCurrencyExchangeByUserResponseDto;
 import com.sparta.currency_user.entity.Currency;
 import com.sparta.currency_user.entity.CurrencyExchange;
 import com.sparta.currency_user.entity.User;
@@ -12,14 +13,11 @@ import com.sparta.currency_user.repository.CurrencyRepository;
 import com.sparta.currency_user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,4 +71,8 @@ public class CurrencyExchangeService {
         return new CurrencyExchangeResponseDto(findCurrencyExchange.getId(), findCurrencyExchange.getAmountAfterExchange(), findCurrencyExchange.getStatus());
     }
 
+    public List<TotalCurrencyExchangeByUserResponseDto> findTotalCurrencyExchangeByUser(Long userId) {
+        List<TotalCurrencyExchangeByUserResponseDto> result = currencyExchangeRepository.findTotalCurrencyExchangeByUser(userId);
+        return result;
+    }
 }

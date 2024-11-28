@@ -1,7 +1,7 @@
 package com.sparta.currency_user.service;
 
-import com.sparta.currency_user.dto.UserRequestDto;
-import com.sparta.currency_user.dto.UserResponseDto;
+import com.sparta.currency_user.dto.user.UserRequestDto;
+import com.sparta.currency_user.dto.user.UserResponseDto;
 import com.sparta.currency_user.entity.User;
 import com.sparta.currency_user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

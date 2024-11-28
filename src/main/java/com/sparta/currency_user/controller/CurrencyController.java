@@ -1,7 +1,7 @@
 package com.sparta.currency_user.controller;
 
-import com.sparta.currency_user.dto.CurrencyRequestDto;
-import com.sparta.currency_user.dto.CurrencyResponseDto;
+import com.sparta.currency_user.dto.currency.CurrencyRequestDto;
+import com.sparta.currency_user.dto.currency.CurrencyResponseDto;
 import com.sparta.currency_user.service.CurrencyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

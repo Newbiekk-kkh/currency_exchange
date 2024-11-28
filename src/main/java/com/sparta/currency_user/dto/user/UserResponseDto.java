@@ -1,4 +1,4 @@
-package com.sparta.currency_user.dto;
+package com.sparta.currency_user.dto.user;
 
 import com.sparta.currency_user.entity.User;
 import lombok.Getter;

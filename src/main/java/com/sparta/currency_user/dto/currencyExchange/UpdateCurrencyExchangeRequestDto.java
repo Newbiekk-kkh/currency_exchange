@@ -1,4 +1,4 @@
-package com.sparta.currency_user.dto;
+package com.sparta.currency_user.dto.currencyExchange;
 
 import com.sparta.currency_user.enums.CurrencyExchangeStatus;
 import lombok.Getter;
