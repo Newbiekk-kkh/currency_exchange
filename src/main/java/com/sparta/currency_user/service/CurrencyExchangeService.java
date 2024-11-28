@@ -5,6 +5,8 @@ import com.sparta.currency_user.entity.Currency;
 import com.sparta.currency_user.entity.CurrencyExchange;
 import com.sparta.currency_user.entity.User;
 import com.sparta.currency_user.enums.CurrencyExchangeStatus;
+import com.sparta.currency_user.exception.CurrencyExchangeErrorCode;
+import com.sparta.currency_user.exception.CurrencyExchangeException;
 import com.sparta.currency_user.repository.CurrencyExchangeRepository;
 import com.sparta.currency_user.repository.CurrencyRepository;
 import com.sparta.currency_user.repository.UserRepository;
@@ -26,14 +28,15 @@ public class CurrencyExchangeService {
     private final UserRepository userRepository;
     private final CurrencyRepository currencyRepository;
 
+
     @Transactional
-    public CurrencyExchangeResponseDto requestCurrencyExchange(Long userId, String email, Long amountInKrw, String currencyName) {
+    public CurrencyExchangeResponseDto requestCurrencyExchange(Long userId, String email, Long amountInKrw, String currencyName) throws CurrencyExchangeException {
         User findUserById = userRepository.findByIdOrElseThrow(userId);
         User findUserByEmail = userRepository.findByEmailOrElseThrow(email);
         Currency findCurrency = currencyRepository.findByCurrencyNameOrElseThrow(currencyName);
 
         if (!findUserById.equals(findUserByEmail)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+            throw new CurrencyExchangeException(CurrencyExchangeErrorCode.EMAIL_MISMATCH);
         }
 
         BigDecimal amountAfterExchange = new BigDecimal("0");
@@ -49,7 +52,7 @@ public class CurrencyExchangeService {
         return new CurrencyExchangeResponseDto(currencyExchange.getId(), currencyExchange.getAmountAfterExchange(), currencyExchange.getStatus());
     }
 
-    public List<CurrencyExchangeResponseDto> findAllCurrencyExchangeByUser(Long userId) {
+    public List<CurrencyExchangeResponseDto> findAllCurrencyExchangeByUser(Long userId) throws CurrencyExchangeException {
         User findUser = userRepository.findByIdOrElseThrow(userId);
         List<CurrencyExchange> allCurrencyExchangeListByUser = currencyExchangeRepository.findAllByUser(findUser);
 
@@ -57,15 +60,17 @@ public class CurrencyExchangeService {
     }
 
     @Transactional
-    public void updateCurrencyExchangeStatus(Long userId, Long currencyExchangeId, CurrencyExchangeStatus status) {
+    public String updateCurrencyExchangeStatus(Long userId, Long currencyExchangeId, CurrencyExchangeStatus status) throws CurrencyExchangeException {
         User findUser = userRepository.findByIdOrElseThrow(userId);
         CurrencyExchange findCurrencyExchange = currencyExchangeRepository.findByIdOrElseThrow(currencyExchangeId);
 
         if (!findCurrencyExchange.getUser().equals(findUser)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+            throw new CurrencyExchangeException(CurrencyExchangeErrorCode.USER_MISMATCH);
         }
 
         findCurrencyExchange.updateStatus(status);
+
+        return "환전 요청 상태 변경에 성공하셨습니다.";
     }
 
 }

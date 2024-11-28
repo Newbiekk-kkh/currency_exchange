@@ -4,10 +4,12 @@ import com.sparta.currency_user.dto.CurrencyExchangeRequestDto;
 import com.sparta.currency_user.dto.CurrencyExchangeResponseDto;
 import com.sparta.currency_user.dto.CurrencyResponseDto;
 import com.sparta.currency_user.dto.UpdateCurrencyExchangeRequestDto;
+import com.sparta.currency_user.exception.CurrencyExchangeException;
 import com.sparta.currency_user.service.CurrencyExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,23 +23,22 @@ public class CurrencyExchangeController {
     @PostMapping
     public ResponseEntity<CurrencyExchangeResponseDto> requestCurrencyExchange(
             @PathVariable Long userId,
-            @RequestBody CurrencyExchangeRequestDto dto) {
+            @Validated @RequestBody CurrencyExchangeRequestDto dto) throws CurrencyExchangeException {
         CurrencyExchangeResponseDto currencyExchangeResponseDto = currencyExchangeService.requestCurrencyExchange(userId, dto.getEmail(), dto.getAmountInKrw(), dto.getCurrencyName());
 
-        return new ResponseEntity<>(currencyExchangeResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(currencyExchangeResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<CurrencyExchangeResponseDto>> findAllCurrencyExchangeByUser(@PathVariable Long userId) {
+    public ResponseEntity<List<CurrencyExchangeResponseDto>> findAllCurrencyExchangeByUser(@PathVariable Long userId) throws CurrencyExchangeException {
         List<CurrencyExchangeResponseDto> allCurrencyExchangeListByUser = currencyExchangeService.findAllCurrencyExchangeByUser(userId);
 
         return new ResponseEntity<>(allCurrencyExchangeListByUser, HttpStatus.OK);
     }
 
     @PatchMapping("/{currencyExchangesId}")
-    public ResponseEntity<Void> updateCurrencyExchangeStatus(@PathVariable("userId") Long userId, @PathVariable("currencyExchangesId") Long currencyExchangesId,@RequestBody UpdateCurrencyExchangeRequestDto dto) {
-        currencyExchangeService.updateCurrencyExchangeStatus(userId, currencyExchangesId, dto.getStatus());
+    public String updateCurrencyExchangeStatus(@PathVariable("userId") Long userId, @PathVariable("currencyExchangesId") Long currencyExchangesId,@RequestBody UpdateCurrencyExchangeRequestDto dto) throws CurrencyExchangeException {
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return currencyExchangeService.updateCurrencyExchangeStatus(userId, currencyExchangesId, dto.getStatus());
     }
 }

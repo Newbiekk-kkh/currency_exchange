@@ -2,6 +2,8 @@ package com.sparta.currency_user.repository;
 
 import com.sparta.currency_user.entity.CurrencyExchange;
 import com.sparta.currency_user.entity.User;
+import com.sparta.currency_user.exception.CurrencyExchangeErrorCode;
+import com.sparta.currency_user.exception.CurrencyExchangeException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
@@ -15,11 +17,11 @@ public interface CurrencyExchangeRepository extends JpaRepository<CurrencyExchan
     Optional<CurrencyExchange> findByUser(User user);
     List<CurrencyExchange> findAllByUser(User user);
 
-    default CurrencyExchange findByUserOrElseThrow(User user) {
-        return findByUser(user).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."));
+    default CurrencyExchange findByUserOrElseThrow(User user) throws CurrencyExchangeException {
+        return findByUser(user).orElseThrow(()-> new CurrencyExchangeException(CurrencyExchangeErrorCode.USER_NOT_FOUND));
     }
 
-    default CurrencyExchange findByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "환전 요청을 찾을수 없습니다."));
+    default CurrencyExchange findByIdOrElseThrow(Long id) throws CurrencyExchangeException {
+        return findById(id).orElseThrow(()-> new CurrencyExchangeException(CurrencyExchangeErrorCode.CURRENCYEXCHANGE_NOT_FOUND));
     }
 }
