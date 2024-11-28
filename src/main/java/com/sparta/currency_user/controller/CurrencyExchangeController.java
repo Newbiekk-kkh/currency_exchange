@@ -20,6 +20,13 @@ import java.util.List;
 public class CurrencyExchangeController {
     private final CurrencyExchangeService currencyExchangeService;
 
+    /**
+     * 환전 요청
+     * @param userId URL 경로 유저아이디
+     * @param dto CurrencyExchangeRequestDto
+     * @return ResponseEntity<>(currencyExchangeResponseDto, HttpStatus.CREATED), 실패시 상황에 맞는 에러코드
+     * @throws CurrencyExchangeException
+     */
     @PostMapping
     public ResponseEntity<CurrencyExchangeResponseDto> requestCurrencyExchange(
             @PathVariable Long userId,
@@ -30,6 +37,12 @@ public class CurrencyExchangeController {
         return new ResponseEntity<>(currencyExchangeResponseDto, HttpStatus.CREATED);
     }
 
+    /**
+     * 특정 회원이 요청한 환전 목록 보기
+     * @param userId URL 경로 유저아이디
+     * @return ResponseEntity<>(allCurrencyExchangeListByUser, HttpStatus.OK), 실패시 상황에 맞는 에러코드
+     * @throws CurrencyExchangeException
+     */
     @GetMapping
     public ResponseEntity<List<CurrencyExchangeResponseDto>> findAllCurrencyExchangeByUser(
             @PathVariable Long userId)
@@ -39,6 +52,11 @@ public class CurrencyExchangeController {
         return new ResponseEntity<>(allCurrencyExchangeListByUser, HttpStatus.OK);
     }
 
+    /**
+     * 특정 유저가 요청한 환전의 총 횟수와, 총 금액
+     * @param userId URL 경로 유저아이디
+     * @return ResponseEntity<>(totalCurrencyExchangeByUser, HttpStatus.OK), 실패시 상황에 맞는 에러코드
+     */
     @GetMapping("/total")
     public ResponseEntity<List<TotalCurrencyExchangeByUserResponseDto>> findTotalCurrencyExchangeByUser(@PathVariable Long userId) {
         List<TotalCurrencyExchangeByUserResponseDto> totalCurrencyExchangeByUser = currencyExchangeService.findTotalCurrencyExchangeByUser(userId);
@@ -46,6 +64,14 @@ public class CurrencyExchangeController {
         return new ResponseEntity<>(totalCurrencyExchangeByUser, HttpStatus.OK);
     }
 
+    /**
+     * 환전 상태 업데이트 (정상 -> 취소)
+     * @param userId URL 경로 유저아이디
+     * @param currencyExchangesId 환전 요청 Id
+     * @param dto CurrencyExchangeResponseDto
+     * @return ResponseEntity<>(updatedCurrencyExchangeResponseDto, HttpStatus.OK), 실패시 상황에 맞는 에러코드
+     * @throws CurrencyExchangeException
+     */
     @PatchMapping("/{currencyExchangesId}")
     public ResponseEntity<CurrencyExchangeResponseDto> updateCurrencyExchangeStatus(
             @PathVariable("userId") Long userId,
