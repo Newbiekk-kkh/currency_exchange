@@ -3,6 +3,7 @@ package com.sparta.currency_user.controller;
 import com.sparta.currency_user.dto.CurrencyExchangeRequestDto;
 import com.sparta.currency_user.dto.CurrencyExchangeResponseDto;
 import com.sparta.currency_user.dto.CurrencyResponseDto;
+import com.sparta.currency_user.dto.UpdateCurrencyExchangeRequestDto;
 import com.sparta.currency_user.service.CurrencyExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,5 +32,12 @@ public class CurrencyExchangeController {
         List<CurrencyExchangeResponseDto> allCurrencyExchangeListByUser = currencyExchangeService.findAllCurrencyExchangeByUser(userId);
 
         return new ResponseEntity<>(allCurrencyExchangeListByUser, HttpStatus.OK);
+    }
+
+    @PatchMapping("/{currencyExchangesId}")
+    public ResponseEntity<Void> updateCurrencyExchangeStatus(@PathVariable("userId") Long userId, @PathVariable("currencyExchangesId") Long currencyExchangesId,@RequestBody UpdateCurrencyExchangeRequestDto dto) {
+        currencyExchangeService.updateCurrencyExchangeStatus(userId, currencyExchangesId, dto.getStatus());
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

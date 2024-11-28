@@ -18,4 +18,8 @@ public interface CurrencyExchangeRepository extends JpaRepository<CurrencyExchan
     default CurrencyExchange findByUserOrElseThrow(User user) {
         return findByUser(user).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."));
     }
+
+    default CurrencyExchange findByIdOrElseThrow(Long id) {
+        return findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "환전 요청을 찾을수 없습니다."));
+    }
 }

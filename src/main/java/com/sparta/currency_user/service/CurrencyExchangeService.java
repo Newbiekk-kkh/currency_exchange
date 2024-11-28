@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class CurrencyExchangeService {
         Currency findCurrency = currencyRepository.findByCurrencyNameOrElseThrow(currencyName);
 
         if (!findUserById.equals(findUserByEmail)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
         }
 
         BigDecimal amountAfterExchange = new BigDecimal("0");
@@ -54,4 +55,17 @@ public class CurrencyExchangeService {
 
         return allCurrencyExchangeListByUser.stream().map(CurrencyExchangeResponseDto::toDto).toList();
     }
+
+    @Transactional
+    public void updateCurrencyExchangeStatus(Long userId, Long currencyExchangeId, CurrencyExchangeStatus status) {
+        User findUser = userRepository.findByIdOrElseThrow(userId);
+        CurrencyExchange findCurrencyExchange = currencyExchangeRepository.findByIdOrElseThrow(currencyExchangeId);
+
+        if (!findCurrencyExchange.getUser().equals(findUser)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
+        }
+
+        findCurrencyExchange.updateStatus(status);
+    }
+
 }

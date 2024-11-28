@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Getter
+@Setter
 public class CurrencyExchange extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +38,10 @@ public class CurrencyExchange extends BaseEntity {
     public CurrencyExchange(Long amountInKrw, BigDecimal amountAfterExchange, CurrencyExchangeStatus status) {
         this.amountInKrw = amountInKrw;
         this.amountAfterExchange = amountAfterExchange;
+        this.status = status;
+    }
+
+    public void updateStatus(CurrencyExchangeStatus status) {
         this.status = status;
     }
 
