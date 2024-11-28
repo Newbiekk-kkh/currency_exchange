@@ -60,7 +60,7 @@ public class CurrencyExchangeService {
     }
 
     @Transactional
-    public String updateCurrencyExchangeStatus(Long userId, Long currencyExchangeId, CurrencyExchangeStatus status) throws CurrencyExchangeException {
+    public CurrencyExchangeResponseDto updateCurrencyExchangeStatus(Long userId, Long currencyExchangeId, CurrencyExchangeStatus status) throws CurrencyExchangeException {
         User findUser = userRepository.findByIdOrElseThrow(userId);
         CurrencyExchange findCurrencyExchange = currencyExchangeRepository.findByIdOrElseThrow(currencyExchangeId);
 
@@ -70,7 +70,7 @@ public class CurrencyExchangeService {
 
         findCurrencyExchange.updateStatus(status);
 
-        return "환전 요청 상태 변경에 성공하셨습니다.";
+        return new CurrencyExchangeResponseDto(findCurrencyExchange.getId(), findCurrencyExchange.getAmountAfterExchange(), findCurrencyExchange.getStatus());
     }
 
 }

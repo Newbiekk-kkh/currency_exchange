@@ -23,22 +23,30 @@ public class CurrencyExchangeController {
     @PostMapping
     public ResponseEntity<CurrencyExchangeResponseDto> requestCurrencyExchange(
             @PathVariable Long userId,
-            @Validated @RequestBody CurrencyExchangeRequestDto dto) throws CurrencyExchangeException {
+            @Validated @RequestBody CurrencyExchangeRequestDto dto)
+            throws CurrencyExchangeException {
         CurrencyExchangeResponseDto currencyExchangeResponseDto = currencyExchangeService.requestCurrencyExchange(userId, dto.getEmail(), dto.getAmountInKrw(), dto.getCurrencyName());
 
         return new ResponseEntity<>(currencyExchangeResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<CurrencyExchangeResponseDto>> findAllCurrencyExchangeByUser(@PathVariable Long userId) throws CurrencyExchangeException {
+    public ResponseEntity<List<CurrencyExchangeResponseDto>> findAllCurrencyExchangeByUser(
+            @PathVariable Long userId)
+            throws CurrencyExchangeException {
         List<CurrencyExchangeResponseDto> allCurrencyExchangeListByUser = currencyExchangeService.findAllCurrencyExchangeByUser(userId);
 
         return new ResponseEntity<>(allCurrencyExchangeListByUser, HttpStatus.OK);
     }
 
     @PatchMapping("/{currencyExchangesId}")
-    public String updateCurrencyExchangeStatus(@PathVariable("userId") Long userId, @PathVariable("currencyExchangesId") Long currencyExchangesId,@RequestBody UpdateCurrencyExchangeRequestDto dto) throws CurrencyExchangeException {
+    public ResponseEntity<CurrencyExchangeResponseDto> updateCurrencyExchangeStatus(
+            @PathVariable("userId") Long userId,
+            @PathVariable("currencyExchangesId") Long currencyExchangesId,
+            @RequestBody UpdateCurrencyExchangeRequestDto dto)
+            throws CurrencyExchangeException {
+        CurrencyExchangeResponseDto updatedCurrencyExchangeResponseDto = currencyExchangeService.updateCurrencyExchangeStatus(userId, currencyExchangesId, dto.getStatus());
 
-        return currencyExchangeService.updateCurrencyExchangeStatus(userId, currencyExchangesId, dto.getStatus());
+        return new ResponseEntity<>(updatedCurrencyExchangeResponseDto, HttpStatus.OK);
     }
 }
