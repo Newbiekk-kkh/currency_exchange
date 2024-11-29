@@ -20,6 +20,9 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
+        currencyRepository.save(new Currency("USD", new BigDecimal("1400"), "$", 2)); // 달러
+        currencyRepository.save(new Currency("JPY", new BigDecimal("9"), "円", 0)); // 엔화
+
         List<Currency> currencyList = currencyRepository.findAll();
 
         for (Currency currency : currencyList) {

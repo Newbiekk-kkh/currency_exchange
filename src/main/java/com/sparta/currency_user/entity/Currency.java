@@ -22,10 +22,14 @@ public class    Currency extends BaseEntity {
     @Column(nullable = false)
     private String symbol;
 
-    public Currency(String currencyName, BigDecimal exchangeRate, String symbol) {
+    @Column(nullable = false)
+    private int scale;
+
+    public Currency(String currencyName, BigDecimal exchangeRate, String symbol, int scale) {
         this.currencyName = currencyName;
         this.exchangeRate = exchangeRate;
         this.symbol = symbol;
+        this.scale = scale;
     }
 
     public Currency() {}

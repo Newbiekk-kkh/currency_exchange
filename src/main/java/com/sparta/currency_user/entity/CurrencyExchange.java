@@ -19,7 +19,7 @@ public class CurrencyExchange extends BaseEntity {
     private Long amountInKrw;
 
     @Column(nullable = false)
-    private BigDecimal amountAfterExchange;
+    private String formattedAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,10 +35,10 @@ public class CurrencyExchange extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public CurrencyExchange(Long amountInKrw, BigDecimal amountAfterExchange, CurrencyExchangeStatus status) {
-        this.amountInKrw = amountInKrw;
-        this.amountAfterExchange = amountAfterExchange;
+    public CurrencyExchange(Long amountInKrw, String formattedAmount, CurrencyExchangeStatus status) {
         this.status = status;
+        this.amountInKrw = amountInKrw;
+        this.formattedAmount = formattedAmount;
     }
 
     public void updateStatus(CurrencyExchangeStatus status) {

@@ -37,15 +37,16 @@ public class CurrencyExchangeService {
         }
 
         BigDecimal amountAfterExchange = new BigDecimal("0");
-        amountAfterExchange = BigDecimal.valueOf(amountInKrw).divide(findCurrency.getExchangeRate(), 2, RoundingMode.HALF_EVEN);
-
-        CurrencyExchange currencyExchange = new CurrencyExchange(amountInKrw, amountAfterExchange, CurrencyExchangeStatus.NORMAL);
+        amountAfterExchange = BigDecimal.valueOf(amountInKrw).divide(findCurrency.getExchangeRate(), findCurrency.getScale(), RoundingMode.HALF_EVEN);
+        String formattedAmount = formatAmount(amountAfterExchange, findCurrency.getSymbol());
+        
+        CurrencyExchange currencyExchange = new CurrencyExchange(amountInKrw, formattedAmount, CurrencyExchangeStatus.NORMAL);
         currencyExchange.setUser(findUserById);
         currencyExchange.setCurrency(findCurrency);
 
         currencyExchangeRepository.save(currencyExchange);
 
-        return new CurrencyExchangeResponseDto(currencyExchange.getId(), currencyExchange.getAmountAfterExchange(), currencyExchange.getStatus());
+        return new CurrencyExchangeResponseDto(currencyExchange.getId(), currencyExchange.getFormattedAmount(), currencyExchange.getStatus());
     }
 
     // 특정 고객의 환전 요청 리스트 조회 로직
@@ -74,6 +75,11 @@ public class CurrencyExchangeService {
 
         findCurrencyExchange.updateStatus(status);
 
-        return new CurrencyExchangeResponseDto(findCurrencyExchange.getId(), findCurrencyExchange.getAmountAfterExchange(), findCurrencyExchange.getStatus());
+        return new CurrencyExchangeResponseDto(findCurrencyExchange.getId(), findCurrencyExchange.getFormattedAmount(), findCurrencyExchange.getStatus());
+    }
+
+    // 통화별 출력 형식 적용
+    public static String formatAmount(BigDecimal amountAfterExchange, String symbol) {
+        return amountAfterExchange + symbol;
     }
 }
