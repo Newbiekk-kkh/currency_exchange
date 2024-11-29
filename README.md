@@ -24,7 +24,8 @@
 
 
 ## 📅 ERD 다이어그램
-![image](https://github.com/user-attachments/assets/79fecc1c-1d8a-4305-b42e-0f10b30ecf36)
+![image](https://github.com/user-attachments/assets/2df1f161-d9e9-41a6-afca-53e601f0f1f3)
+
 
 
 
