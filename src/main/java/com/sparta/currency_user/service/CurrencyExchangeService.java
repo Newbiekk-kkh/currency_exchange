@@ -26,23 +26,21 @@ public class CurrencyExchangeService {
     private final UserRepository userRepository;
     private final CurrencyRepository currencyRepository;
 
-
+    // 환전 요청 로직
     @Transactional
     public CurrencyExchangeResponseDto requestCurrencyExchange(Long userId, String email, Long amountInKrw, String currencyName) throws CurrencyExchangeException {
         User findUserById = userRepository.findByIdOrElseThrow(userId);
-        User findUserByEmail = userRepository.findByEmailOrElseThrow(email);
         Currency findCurrency = currencyRepository.findByCurrencyNameOrElseThrow(currencyName);
 
-        if (!findUserById.equals(findUserByEmail)) {
+        if (!findUserById.getEmail().equals(email)) {
             throw new CurrencyExchangeException(CurrencyExchangeErrorCode.EMAIL_MISMATCH);
         }
 
         BigDecimal amountAfterExchange = new BigDecimal("0");
-
         amountAfterExchange = BigDecimal.valueOf(amountInKrw).divide(findCurrency.getExchangeRate(), 2, RoundingMode.HALF_EVEN);
 
         CurrencyExchange currencyExchange = new CurrencyExchange(amountInKrw, amountAfterExchange, CurrencyExchangeStatus.NORMAL);
-        currencyExchange.setUser(findUserByEmail);
+        currencyExchange.setUser(findUserById);
         currencyExchange.setCurrency(findCurrency);
 
         currencyExchangeRepository.save(currencyExchange);
@@ -50,6 +48,7 @@ public class CurrencyExchangeService {
         return new CurrencyExchangeResponseDto(currencyExchange.getId(), currencyExchange.getAmountAfterExchange(), currencyExchange.getStatus());
     }
 
+    // 특정 고객의 환전 요청 리스트 조회 로직
     public List<CurrencyExchangeResponseDto> findAllCurrencyExchangeByUser(Long userId) throws CurrencyExchangeException {
         User findUser = userRepository.findByIdOrElseThrow(userId);
         List<CurrencyExchange> allCurrencyExchangeListByUser = currencyExchangeRepository.findAllByUser(findUser);
@@ -57,6 +56,13 @@ public class CurrencyExchangeService {
         return allCurrencyExchangeListByUser.stream().map(CurrencyExchangeResponseDto::toDto).toList();
     }
 
+    // 특정 고객의 총 환전 횟수 및 총 환전 금액 조회 로직
+    public List<TotalCurrencyExchangeByUserResponseDto> findTotalCurrencyExchangeByUser(Long userId) {
+        List<TotalCurrencyExchangeByUserResponseDto> totalCurrencyExchange = currencyExchangeRepository.findTotalCurrencyExchangeByUser(userId);
+        return totalCurrencyExchange;
+    }
+
+    // 환전 요청의 상태 업데이트 로직
     @Transactional
     public CurrencyExchangeResponseDto updateCurrencyExchangeStatus(Long userId, Long currencyExchangeId, CurrencyExchangeStatus status) throws CurrencyExchangeException {
         User findUser = userRepository.findByIdOrElseThrow(userId);
@@ -69,10 +75,5 @@ public class CurrencyExchangeService {
         findCurrencyExchange.updateStatus(status);
 
         return new CurrencyExchangeResponseDto(findCurrencyExchange.getId(), findCurrencyExchange.getAmountAfterExchange(), findCurrencyExchange.getStatus());
-    }
-
-    public List<TotalCurrencyExchangeByUserResponseDto> findTotalCurrencyExchangeByUser(Long userId) {
-        List<TotalCurrencyExchangeByUserResponseDto> result = currencyExchangeRepository.findTotalCurrencyExchangeByUser(userId);
-        return result;
     }
 }
