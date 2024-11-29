@@ -32,12 +32,16 @@ public class CurrencyExchangeService {
         User findUserById = userRepository.findByIdOrElseThrow(userId);
         Currency findCurrency = currencyRepository.findByCurrencyNameOrElseThrow(currencyName);
 
+        // 찾은 유저와 입력받은 이메일이 다를시 예외처리
         if (!findUserById.getEmail().equals(email)) {
             throw new CurrencyExchangeException(CurrencyExchangeErrorCode.EMAIL_MISMATCH);
         }
 
+        // 환전 후 금액 계산
         BigDecimal amountAfterExchange = new BigDecimal("0");
         amountAfterExchange = BigDecimal.valueOf(amountInKrw).divide(findCurrency.getExchangeRate(), findCurrency.getScale(), RoundingMode.HALF_EVEN);
+
+        // 통화 출력 형식 적용
         String formattedAmount = formatAmount(amountAfterExchange, findCurrency.getSymbol());
         
         CurrencyExchange currencyExchange = new CurrencyExchange(amountInKrw, formattedAmount, CurrencyExchangeStatus.NORMAL);
@@ -69,6 +73,7 @@ public class CurrencyExchangeService {
         User findUser = userRepository.findByIdOrElseThrow(userId);
         CurrencyExchange findCurrencyExchange = currencyExchangeRepository.findByIdOrElseThrow(currencyExchangeId);
 
+        // 찾은 고객과 환전요청을 한 고객이 다를시 예외처리
         if (!findCurrencyExchange.getUser().equals(findUser)) {
             throw new CurrencyExchangeException(CurrencyExchangeErrorCode.USER_MISMATCH);
         }

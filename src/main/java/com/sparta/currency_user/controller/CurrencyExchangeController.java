@@ -22,31 +22,38 @@ public class CurrencyExchangeController {
 
     /**
      * 환전 요청
+     *
      * @param userId URL 경로 유저아이디
-     * @param dto CurrencyExchangeRequestDto
+     * @param dto    CurrencyExchangeRequestDto
      * @return ResponseEntity<>(currencyExchangeResponseDto, HttpStatus.CREATED), 실패시 상황에 맞는 에러코드
      * @throws CurrencyExchangeException
      */
     @PostMapping
     public ResponseEntity<CurrencyExchangeResponseDto> requestCurrencyExchange(
             @PathVariable Long userId,
-            @Validated @RequestBody CurrencyExchangeRequestDto dto)
-            throws CurrencyExchangeException {
-        CurrencyExchangeResponseDto currencyExchangeResponseDto = currencyExchangeService.requestCurrencyExchange(userId, dto.getEmail(), dto.getAmountInKrw(), dto.getCurrencyName());
+            @Validated @RequestBody CurrencyExchangeRequestDto dto
+            ) throws CurrencyExchangeException {
+        CurrencyExchangeResponseDto currencyExchangeResponseDto = currencyExchangeService.requestCurrencyExchange(
+                userId,
+                dto.getEmail(),
+                dto.getAmountInKrw(),
+                dto.getCurrencyName()
+        );
 
         return new ResponseEntity<>(currencyExchangeResponseDto, HttpStatus.CREATED);
     }
 
     /**
      * 특정 회원이 요청한 환전 목록 보기
+     *
      * @param userId URL 경로 유저아이디
      * @return ResponseEntity<>(allCurrencyExchangeListByUser, HttpStatus.OK), 실패시 상황에 맞는 에러코드
      * @throws CurrencyExchangeException
      */
     @GetMapping
     public ResponseEntity<List<CurrencyExchangeResponseDto>> findAllCurrencyExchangeByUser(
-            @PathVariable Long userId)
-            throws CurrencyExchangeException {
+            @PathVariable Long userId
+            ) throws CurrencyExchangeException {
         List<CurrencyExchangeResponseDto> allCurrencyExchangeListByUser = currencyExchangeService.findAllCurrencyExchangeByUser(userId);
 
         return new ResponseEntity<>(allCurrencyExchangeListByUser, HttpStatus.OK);
@@ -54,6 +61,7 @@ public class CurrencyExchangeController {
 
     /**
      * 특정 유저가 요청한 환전의 총 횟수와, 총 금액
+     *
      * @param userId URL 경로 유저아이디
      * @return ResponseEntity<>(totalCurrencyExchangeByUser, HttpStatus.OK), 실패시 상황에 맞는 에러코드
      */
@@ -66,9 +74,10 @@ public class CurrencyExchangeController {
 
     /**
      * 환전 상태 업데이트 (정상 -> 취소)
-     * @param userId URL 경로 유저아이디
+     *
+     * @param userId              URL 경로 유저아이디
      * @param currencyExchangesId 환전 요청 Id
-     * @param dto CurrencyExchangeResponseDto
+     * @param dto                 CurrencyExchangeResponseDto
      * @return ResponseEntity<>(updatedCurrencyExchangeResponseDto, HttpStatus.OK), 실패시 상황에 맞는 에러코드
      * @throws CurrencyExchangeException
      */
@@ -76,8 +85,8 @@ public class CurrencyExchangeController {
     public ResponseEntity<CurrencyExchangeResponseDto> updateCurrencyExchangeStatus(
             @PathVariable("userId") Long userId,
             @PathVariable("currencyExchangesId") Long currencyExchangesId,
-            @RequestBody UpdateCurrencyExchangeRequestDto dto)
-            throws CurrencyExchangeException {
+            @RequestBody UpdateCurrencyExchangeRequestDto dto
+            ) throws CurrencyExchangeException {
         CurrencyExchangeResponseDto updatedCurrencyExchangeResponseDto = currencyExchangeService.updateCurrencyExchangeStatus(userId, currencyExchangesId, dto.getStatus());
 
         return new ResponseEntity<>(updatedCurrencyExchangeResponseDto, HttpStatus.OK);

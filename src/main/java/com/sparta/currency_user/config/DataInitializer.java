@@ -20,11 +20,14 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
+        // 달러와 엔화 데이터 추가
         currencyRepository.save(new Currency("USD", new BigDecimal("1400"), "$", 2)); // 달러
         currencyRepository.save(new Currency("JPY", new BigDecimal("9"), "円", 0)); // 엔화
 
         List<Currency> currencyList = currencyRepository.findAll();
 
+        // 스프링이 구동될 때 통화 테이블에 있는 환율이 0이거나 음수이거나 지정된 범위를 벗어나는 경우
+        // 유효하지 않은 값으로 간주하고 로그를 기록
         for (Currency currency : currencyList) {
             BigDecimal exchangeRate = currency.getExchangeRate();
 

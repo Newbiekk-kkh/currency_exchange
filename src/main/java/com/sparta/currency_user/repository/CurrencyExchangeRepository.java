@@ -8,9 +8,7 @@ import com.sparta.currency_user.exception.CurrencyExchangeException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +28,7 @@ public interface CurrencyExchangeRepository extends JpaRepository<CurrencyExchan
 
     // 환전 요청 ID로 환전 요청 찾기
     default CurrencyExchange findByIdOrElseThrow(Long id) throws CurrencyExchangeException {
-        return findById(id).orElseThrow(() -> new CurrencyExchangeException(CurrencyExchangeErrorCode.CURRENCYEXCHANGE_NOT_FOUND));
+        return findById(id).orElseThrow(() -> new CurrencyExchangeException(CurrencyExchangeErrorCode.CURRENCY_EXCHANGE_NOT_FOUND));
     }
 
     // JPQL 을 사용한 특정 유저의 환전 요청 총 횟수 및 총 금액 보기
